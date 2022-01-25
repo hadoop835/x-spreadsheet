@@ -32,8 +32,7 @@ function monthDays(year, month, cdate) {
 export default class Calendar {
   constructor(value) {
     this.value = value;
-    this.cvalue = new Date(value);
-
+    this.cvalue = new Date(value); 
     this.headerLeftEl = h('div', 'calendar-header-left');
     this.bodyEl = h('tbody', '');
     this.buildAll();
