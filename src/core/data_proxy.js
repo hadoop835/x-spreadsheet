@@ -78,6 +78,7 @@ const defaultSettings = {
   showToolbar: true,
   showContextmenu: true,
   showBottomBar: true,
+  showVtoolbar:false,
   row: {
     len: 100,
     height: 25,

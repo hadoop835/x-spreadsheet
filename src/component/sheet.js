@@ -14,6 +14,7 @@ import Print from './print';
 import ContextMenu from './contextmenu';
 import Table from './table';
 import Toolbar from './toolbar/index';
+import ViewToolbar  from './viewtoolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
 import { xtoast } from './message';
@@ -70,7 +71,7 @@ function scrollbarMove() {
 function selectorSet(multiple, ri, ci, indexesUpdated = true, moving = false) {
   if (ri === -1 && ci === -1) return;
   const {
-    table, selector, toolbar, data,
+    table, selector, toolbar, data,vtoolbar,
     contextMenu,
   } = this;
   const cell = data.getCell(ri, ci);
@@ -84,6 +85,7 @@ function selectorSet(multiple, ri, ci, indexesUpdated = true, moving = false) {
   }
   contextMenu.setMode((ri === -1 || ci === -1) ? 'row-col' : 'range');
   toolbar.reset();
+  vtoolbar.reset();
   table.render();
 }
 
@@ -291,6 +293,7 @@ function sheetReset() {
     overlayerCEl,
     table,
     toolbar,
+    vtoolbar,
     selector,
     el,
   } = this;
@@ -305,6 +308,7 @@ function sheetReset() {
   sheetFreeze.call(this);
   table.render();
   toolbar.reset();
+  vtoolbar.reset();
   selector.reset();
 }
 
@@ -531,6 +535,7 @@ function insertDeleteRowColumn(type) {
 }
 
 function toolbarChange(type, value) {
+  
   const { data } = this;
   if (type === 'undo') {
     this.undo();
@@ -583,6 +588,7 @@ function sheetInitEvents() {
     editor,
     contextMenu,
     toolbar,
+    vtoolbar,
     modalValidation,
     sortFilter,
   } = this;
@@ -865,11 +871,12 @@ function sheetInitEvents() {
 export default class Sheet {
   constructor(targetEl, data) {
     this.eventMap = createEventEmitter();
-    const { view, showToolbar, showContextmenu } = data.settings;
+    const { view, showToolbar, showContextmenu,showVtoolbar } = data.settings;
     this.el = h('div', `${cssPrefix}-sheet`);
     this.toolbar = new Toolbar(data, view.width, !showToolbar);
+    this.vtoolbar = new ViewToolbar(data,view.width,!showVtoolbar);
     this.print = new Print(data);
-    targetEl.children(this.toolbar.el, this.el, this.print.el);
+    targetEl.children(this.toolbar.el,this.vtoolbar.el, this.el, this.print.el);
     this.data = data;
     // table
     this.tableEl = h('canvas', `${cssPrefix}-table`);
@@ -938,6 +945,7 @@ export default class Sheet {
     verticalScrollbarSet.call(this);
     horizontalScrollbarSet.call(this);
     this.toolbar.resetData(data);
+    this.vtoolbar.resetData(data);
     this.print.resetData(data);
     this.selector.resetData(data);
     this.table.resetData(data);
@@ -975,6 +983,10 @@ export default class Sheet {
   getRect() {
     const { data } = this;
     return { width: data.viewWidth(), height: data.viewHeight() };
+  }
+  //修改源库，进行打印设置
+  setPrint(data){
+    this.print.preview();
   }
 
   getTableOffset() {

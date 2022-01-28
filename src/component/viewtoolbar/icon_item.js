@@ -1,10 +1,12 @@
-import Item from './item';
-import Icon from '../icon';
+import Item from '../toolbar/item';
+import ViewIcon from './view_icon';
+import ViewText from './view_text';
 
 export default class IconItem extends Item {
   element() {
     return super.element()
-      .child(new Icon(this.tag)) 
+      .child(new ViewIcon(this.tag))
+      .child(new ViewText(this.tag,this.value))
       .on('click', () => this.change(this.tag));
   }
 

@@ -117,7 +117,10 @@ class Spreadsheet {
     const { validations } = this.data;
     return validations.errors.size <= 0;
   }
-
+  onToolBar(func){
+    this.sheet.on("onToolBar", func);
+    return this;
+  }
   change(cb) {
     this.sheet.on('change', cb);
     return this;

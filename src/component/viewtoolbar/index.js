@@ -1,29 +1,31 @@
 /* global window */
 
-import Align from './align';
-import Valign from './valign';
-import Autofilter from './autofilter';
-import Bold from './bold';
-import Italic from './italic';
-import Strike from './strike';
-import Underline from './underline';
-import Border from './border';
-import Clearformat from './clearformat';
-import Paintformat from './paintformat';
-import TextColor from './text_color';
-import FillColor from './fill_color';
-import FontSize from './font_size';
-import Font from './font';
-import Format from './format';
-import Formula from './formula';
-import Freeze from './freeze';
-import Merge from './merge';
-import Redo from './redo';
-import Undo from './undo';
-import Print from './print';
-import Textwrap from './textwrap';
-import More from './more';
-import Item from './item';
+import First from './first';
+import End from './end';
+import Next from './next';
+import Last from './last';
+import VPrint from './print';
+import Valign from '../toolbar/valign';
+import Autofilter from '../toolbar/autofilter';
+import Bold from '../toolbar/bold';
+import Italic from '../toolbar/italic';
+import Strike from '../toolbar/strike';
+import Underline from '../toolbar/underline';
+import Border from '../toolbar/border';
+import Clearformat from '../toolbar/clearformat';
+import Paintformat from '../toolbar/paintformat';
+import TextColor from '../toolbar/text_color';
+import FillColor from '../toolbar/fill_color';
+import FontSize from '../toolbar/font_size';
+import Font from '../toolbar/font';
+import Format from '../toolbar/format';
+import Formula from '../toolbar/formula';
+import Freeze from '../toolbar/freeze';
+import Merge from '../toolbar/merge';
+import Print from '../toolbar/print';
+import Textwrap from '../toolbar/textwrap';
+import More from '../toolbar/more';
+import Item from '../toolbar/item';
 
 import { h } from '../element';
 import { cssPrefix } from '../../config';
@@ -103,7 +105,8 @@ function genBtn(it) {
   return btn;
 }
 
-export default class Toolbar {
+export default class ViewToolbar {
+  
   constructor(data, widthFn, isHide = false) {
     this.data = data;
     this.change = () => {};
@@ -112,67 +115,25 @@ export default class Toolbar {
     const style = data.defaultStyle();
     this.items = [
       [
-        this.undoEl = new Undo(),
-        this.redoEl = new Redo(),
-        this.paintformatEl = new Paintformat(),
-        this.clearformatEl = new Clearformat(),
+        this.first = new First(), 
       ],
       buildDivider(),
       [
-        this.formatEl = new Format(),
+        this.next = new Next(),
       ],
       buildDivider(),
       [
-        this.fontEl = new Font(),
-        this.fontSizeEl = new FontSize(),
+        this.last = new Last(),
+        this.end = new End(),
       ],
       buildDivider(),
       [
-        this.boldEl = new Bold(),
-        this.italicEl = new Italic(),
-        this.underlineEl = new Underline(),
-        this.strikeEl = new Strike(),
-        this.textColorEl = new TextColor(style.color),
+        this.printEl = new VPrint (),
       ],
-      buildDivider(),
-      [
-        this.fillColorEl = new FillColor(style.bgcolor),
-        this.borderEl = new Border(),
-        this.mergeEl = new Merge(),
-      ],
-      buildDivider(),
-      [
-        this.alignEl = new Align(style.align),
-        this.valignEl = new Valign(style.valign),
-        this.textwrapEl = new Textwrap(),
-      ],
-      buildDivider(),
-      [
-        this.freezeEl = new Freeze(),
-        this.autofilterEl = new Autofilter(),
-        this.formulaEl = new Formula(),
-      ],
-      // buildDivider(),
-      // [
-      //   new Print()
-      // ]
+      
+      
+      
     ];
-
-    const { extendToolbar = {} } = data.settings;
-
-    if (extendToolbar.left && extendToolbar.left.length > 0) {
-      this.items.unshift(buildDivider());
-      const btns = extendToolbar.left.map(genBtn.bind(this));
-
-      this.items.unshift(btns);
-    }
-    if (extendToolbar.right && extendToolbar.right.length > 0) {
-      this.items.push(buildDivider());
-      const btns = extendToolbar.right.map(genBtn.bind(this));
-      this.items.push(btns);
-    }
-
-    this.items.push([this.moreEl = new More()]);
 
     this.el = h('div', `${cssPrefix}-toolbar`);
     this.btns = h('div', `${cssPrefix}-toolbar-btns`);
@@ -221,32 +182,30 @@ export default class Toolbar {
     this.data = data;
     this.reset();
   }
-
+//last:"上一页",next:"下一页",:"首页",end:"末页"
   reset() {
     if (this.isHide) return;
     const { data } = this;
     const style = data.getSelectedCellStyle();
     // console.log('canUndo:', data.canUndo());
-    this.undoEl.setState(!data.canUndo());
-    this.redoEl.setState(!data.canRedo());
-    this.mergeEl.setState(data.canUnmerge(), !data.selector.multiple());
-    this.autofilterEl.setState(!data.canAutofilter());
+   // this.mergeEl.setState(data.canUnmerge(), !data.selector.multiple());
+   // this.autofilterEl.setState(!data.canAutofilter());
     // this.mergeEl.disabled();
     // console.log('selectedCell:', style, cell);
     const { font, format } = style;
-    this.formatEl.setState(format);
-    this.fontEl.setState(font.name);
-    this.fontSizeEl.setState(font.size);
-    this.boldEl.setState(font.bold);
-    this.italicEl.setState(font.italic);
-    this.underlineEl.setState(style.underline);
-    this.strikeEl.setState(style.strike);
-    this.textColorEl.setState(style.color);
-    this.fillColorEl.setState(style.bgcolor);
-    this.alignEl.setState(style.align);
-    this.valignEl.setState(style.valign);
-    this.textwrapEl.setState(style.textwrap);
+    // this.printEl.setState(format);
+    // this.fontEl.setState(font.name);
+    // this.fontSizeEl.setState(font.size);
+    // this.boldEl.setState(font.bold);
+    // this.italicEl.setState(font.italic);
+    // this.underlineEl.setState(style.underline);
+    // this.strikeEl.setState(style.strike);
+    // this.textColorEl.setState(style.color);
+    // this.fillColorEl.setState(style.bgcolor);
+    // this.alignEl.setState(style.align);
+    // this.valignEl.setState(style.valign);
+    // this.textwrapEl.setState(style.textwrap);
     // console.log('freeze is Active:', data.freezeIsActive());
-    this.freezeEl.setState(data.freezeIsActive());
+    //this.freezeEl.setState(data.freezeIsActive());
   }
 }
