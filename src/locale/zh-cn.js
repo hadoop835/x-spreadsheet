@@ -3,6 +3,7 @@ export default {
     undo: '撤销',
     redo: '恢复',
     print: '打印',
+    export: '导出',
     paintformat: '格式刷',
     clearformat: '清除格式',
     format: '数据格式',

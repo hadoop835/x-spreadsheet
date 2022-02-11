@@ -3,29 +3,12 @@
 import First from './first';
 import End from './end';
 import Next from './next';
-import Last from './last';
-import VPrint from './print';
-import Valign from '../toolbar/valign';
-import Autofilter from '../toolbar/autofilter';
-import Bold from '../toolbar/bold';
-import Italic from '../toolbar/italic';
-import Strike from '../toolbar/strike';
-import Underline from '../toolbar/underline';
-import Border from '../toolbar/border';
-import Clearformat from '../toolbar/clearformat';
-import Paintformat from '../toolbar/paintformat';
-import TextColor from '../toolbar/text_color';
-import FillColor from '../toolbar/fill_color';
-import FontSize from '../toolbar/font_size';
-import Font from '../toolbar/font';
-import Format from '../toolbar/format';
-import Formula from '../toolbar/formula';
-import Freeze from '../toolbar/freeze';
-import Merge from '../toolbar/merge';
-import Print from '../toolbar/print';
-import Textwrap from '../toolbar/textwrap';
-import More from '../toolbar/more';
+import Last from './last'; 
+import Input from './lable';
 import Item from '../toolbar/item';
+import Record from './record';
+import Print from './print';
+import Export from './export';
 
 import { h } from '../element';
 import { cssPrefix } from '../../config';
@@ -53,10 +36,10 @@ function initBtns2() {
 }
 
 function moreResize() {
+  debugger
   const {
-    el, btns, moreEl, btns2,
+    el, btns, btns2,
   } = this;
-  const { moreBtns, contentEl } = moreEl.dd;
   el.css('width', `${this.widthFn()}px`);
   const elBox = el.box();
 
@@ -74,13 +57,7 @@ function moreResize() {
     }
   });
   btns.html('').children(...list1);
-  moreBtns.html('').children(...list2);
-  contentEl.css('width', `${sumWidth2}px`);
-  if (list2.length > 0) {
-    moreEl.show();
-  } else {
-    moreEl.hide();
-  }
+ 
 }
 
 function genBtn(it) {
@@ -122,15 +99,23 @@ export default class ViewToolbar {
         this.next = new Next(),
       ],
       buildDivider(),
+      [this.input = new Input()],
+      buildDivider(),
+      [this.record = new Record()],
+      buildDivider(),
+      [ this.last = new Last(),],
+      buildDivider(),
       [
-        this.last = new Last(),
         this.end = new End(),
       ],
       buildDivider(),
       [
-        this.printEl = new VPrint (),
+        this.print = new Print (),
       ],
-      
+      buildDivider(),
+      [
+        this.export = new Export(),
+      ],
       
       
     ];

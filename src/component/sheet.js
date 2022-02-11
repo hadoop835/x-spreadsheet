@@ -534,8 +534,17 @@ function insertDeleteRowColumn(type) {
   sheetReset.call(this);
 }
 
+//预览事件
+function viewtoolbarChange(type, value) {
+  const { data } = this;
+  if(type === 'print'){
+    this.print.preview();
+  }
+   debugger
+   console.log(data);
+}
+
 function toolbarChange(type, value) {
-  
   const { data } = this;
   if (type === 'undo') {
     this.undo();
@@ -639,6 +648,9 @@ function sheetInitEvents() {
 
   // toolbar change
   toolbar.change = (type, value) => toolbarChange.call(this, type, value);
+
+  // vtoolbar change
+  vtoolbar.change=(type,value)=>viewtoolbarChange.call(this,type,value);
 
   // sort filter ok
   sortFilter.ok = (ci, order, o, v) => sortFilterChange.call(this, ci, order, o, v);

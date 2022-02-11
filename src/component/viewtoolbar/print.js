@@ -1,7 +1,7 @@
-import DropdownItem from './dropdown_item';
+import ViewDropdownItem from './view_dropdown_item';
 import DropdownPrint from './dropdown_print';
 
-export default class Print extends DropdownItem {
+export default class Print extends ViewDropdownItem {
   constructor() {
     super('print');
   }
@@ -11,6 +11,6 @@ export default class Print extends DropdownItem {
   }
 
   dropdown() {
-    return null;//new DropdownPrint();
+    return new DropdownPrint();
   }
 }
