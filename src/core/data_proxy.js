@@ -348,6 +348,17 @@ export default class DataProxy {
     this.exceptRowSet = new Set();
     this.sortedRowMap = new Map();
     this.unsortedRowMap = new Map();
+    this.printConfig = {
+      paper: "A4",
+      width: 210,
+      height: 297,
+      definition: 1,
+      isBackend: !1,
+      marginX: 10,
+      marginY: 10,
+      layout: "portrait"
+  };
+  
   }
 
   addValidation(mode, ref, validator) {

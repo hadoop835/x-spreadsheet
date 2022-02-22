@@ -24,6 +24,7 @@ export default {
     autofilter: '自动筛选',
     formula: '函数',
     more: '更多',
+    background:'插入图片',
   },
   contextmenu: {
     copy: '复制',

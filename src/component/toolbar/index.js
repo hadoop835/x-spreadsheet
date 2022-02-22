@@ -24,6 +24,7 @@ import Print from './print';
 import Textwrap from './textwrap';
 import More from './more';
 import Item from './item';
+import BackImage from './image';
 
 import { h } from '../element';
 import { cssPrefix } from '../../config';
@@ -107,6 +108,7 @@ export default class Toolbar {
   constructor(data, widthFn, isHide = false) {
     this.data = data;
     this.change = () => {};
+    this.upload = () => {};
     this.widthFn = widthFn;
     this.isHide = isHide;
     const style = data.defaultStyle();
@@ -152,10 +154,10 @@ export default class Toolbar {
         this.autofilterEl = new Autofilter(),
         this.formulaEl = new Formula(),
       ],
-      // buildDivider(),
-      // [
-      //   new Print()
-      // ]
+      buildDivider(),
+        [
+         this.backImageEl = new BackImage(),
+        ]
     ];
 
     const { extendToolbar = {} } = data.settings;
@@ -184,6 +186,11 @@ export default class Toolbar {
           i.change = (...args) => {
             this.change(...args);
           };
+          if(i.tag === "background"){
+            i.upload = (...args) => {
+              this.upload(...args);
+            };
+          }
         });
       } else {
         this.btns.child(it.el);

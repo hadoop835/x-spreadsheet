@@ -54,8 +54,8 @@
       previewEl.width = 16
       previewEl.height = 16
       var xs = x_spreadsheet('#x-spreadsheet-demo', {
-        showToolbar: false,
-        showVtoolbar:true,
+        showToolbar: true,
+        showVtoolbar:false,
         showGrid: true,
         showBottomBar: true,
         extendToolbar: {
@@ -81,7 +81,7 @@
         }
       })
         .loadData([{
-          freeze: 'F3',
+          freeze: 'J3',
           styles: [
             {
               bgcolor: '#f4f5f8',

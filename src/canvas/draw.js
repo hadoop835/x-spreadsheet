@@ -188,6 +188,18 @@ class Draw {
     return this;
   }
 
+  backGround(src,x, y, w, h){
+    let img = new Image();
+    img.crossOrigin = 'Anonymous'; //解决跨域问题
+    let _self = this;
+    img.onload = function(){
+      _self.ctx.globalAlpha =0.6;  
+      _self.ctx.drawImage(img,npx(x) - 0.5, npx(y) - 0.5,npx(w), npx(h));
+   }
+   img.src=src;
+   return this;
+  }
+  
   fillRect(x, y, w, h) {
     this.ctx.fillRect(npx(x) - 0.5, npx(y) - 0.5, npx(w), npx(h));
     return this;

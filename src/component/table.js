@@ -261,7 +261,8 @@ function renderContentGrid({
 }, fw, fh, tx, ty) {
   const { draw, data } = this;
   const { settings } = data;
-
+  //draw.backGround("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fnimg.ws.126.net%2F%3Furl%3Dhttp%253A%252F%252Fdingyue.ws.126.net%252F2021%252F1013%252F19eb2e26j00r0vwch0014c000k600bzc.jpg%26thumbnail%3D650x2147483647%26quality%3D80%26type%3Djpg&refer=http%3A%2F%2Fnimg.ws.126.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1647225705&t=62f9086202db72e5f63020a8199c72a9",100, 50, 700, 450)
+   
   draw.save();
   draw.attr(tableGridStyle)
     .translate(fw + tx, fh + ty);
@@ -298,6 +299,19 @@ function renderFreezeHighlightLine(fw, fh, ftw, fth) {
   draw.restore();
 }
 
+function drawBackend(data,draw){
+  let list = data["imgList"];
+  if(list){
+    list.forEach((img)=>{
+      if(img.isbackend){
+        draw.backGround(img.src,img.left,img.top,img.width,img.height);
+      }
+    })
+  }
+  
+
+}
+
 /** end */
 class Table {
   constructor(el, data) {
@@ -310,8 +324,9 @@ class Table {
     this.data = data;
     this.render();
   }
-
+  
   render() {
+    debugger;
     // resize canvas
     const { data } = this;
     const { rows, cols } = data;
@@ -328,6 +343,7 @@ class Table {
     const tx = data.freezeTotalWidth();
     const ty = data.freezeTotalHeight();
     const { x, y } = data.scroll;
+    drawBackend.call(this,data,this.draw);
     // 1
     renderContentGrid.call(this, viewRange, fw, fh, tx, ty);
     renderContent.call(this, viewRange, fw, fh, -x, -y);
