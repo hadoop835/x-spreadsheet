@@ -1330,7 +1330,7 @@ form fieldset {
 
 
  /* 拖动样式 */
-.ty-drag-container {
+.spreadsheet-drag-container {
   left: 50px;
   top: 50px;
   position: absolute;
@@ -1339,67 +1339,64 @@ form fieldset {
   padding: 2px;
   z-index: 99;
 }
-.x-spreadsheet-overlayer-content .ty-drag-container {
+.x-spreadsheet-overlayer-content .spreadsheet-drag-container {
   padding: 0;
 }
-/*.ty-drag-container.readonly{
-  padding:0
-}*/
-.ty-drag-container.active {
+
+.spreadsheet-drag-container.active {
   border: 1px solid #515151;
 }
-.ty-drag-container.active.selected {
+.spreadsheet-drag-container.active.selected {
   border: 1px solid #3883fa;
 }
-.ty-drag-container.chart {
+.spreadsheet-drag-container.chart {
   height: 350px;
   width: 650px;
 }
-.ty-drag-container .ty-drag-content {
+.spreadsheet-drag-container .spreadsheet-drag-content {
   width: calc(100% - 4px);
   height: calc(100% - 4px);
   cursor: move;
   position: absolute;
   overflow: hidden;
-  /*background: #07A695;*/
 }
-.ty-drag-container.img,
-.ty-drag-container.barcode {
+.spreadsheet-drag-container.img,
+.spreadsheet-drag-container.barcode {
   padding: 0;
 }
-.ty-drag-container.img .ty-drag-content {
+.spreadsheet-drag-container.img .spreadsheet-drag-content {
   width: 100%;
   height: 100%;
 }
-.ty-drag-container.cell-layer .ty-drag-content {
+.spreadsheet-drag-container.cell-layer .spreadsheet-drag-content {
   width: calc(100% - 2px);
   height: calc(100% - 2px);
 }
-.ty-drag-container.chart .ty-drag-content {
+.spreadsheet-drag-container.chart .spreadsheet-drag-content {
   /*background: #fff;*/
 }
-.ty-drag-content img,
+.spreadsheet-drag-content img,
 ty-drag-content > div {
   width: 100%;
   height: 100%;
 }
-.ty-drag-content .ty-layer-chart {
+.spreadsheet-drag-content .spreadsheet-layer-chart {
   width: 100%;
   height: 100%;
 }
-.ty-drag-mover {
+.spreadsheet-drag-mover {
   width: calc(100% - 4px);
   height: calc(100% - 4px);
   cursor: move;
   position: absolute;
 }
-.ty-drag-circle {
+.spreadsheet-drag-circle {
   display: none;
 }
-.ty-drag-container.active .ty-drag-circle {
+.spreadsheet-drag-container.active .spreadsheet-drag-circle {
   display: block;
 }
-.ty-drag-circle .cc {
+.spreadsheet-drag-circle .circle {
   border-radius: 12px;
   width: 12px;
   height: 12px;
@@ -1407,50 +1404,50 @@ ty-drag-content > div {
   position: absolute;
   border: 1px solid #515151;
 }
-.ty-drag-container.selected .ty-drag-circle .cc {
+.spreadsheet-drag-container.selected .spreadsheet-drag-circle .circle {
   border: 1px solid #3883fa;
 }
-.ty-drag-circle .top-left {
+.spreadsheet-drag-circle .top-left {
   left: -6px;
   top: -6px;
   cursor: nw-resize;
 }
-.ty-drag-circle .top-center {
+.spreadsheet-drag-circle .top-center {
   left: calc(50% - 6px);
   top: -7px;
   cursor: n-resize;
 }
-.ty-drag-circle .top-right {
+.spreadsheet-drag-circle .top-right {
   right: -6px;
   top: -6px;
   cursor: ne-resize;
 }
-.ty-drag-circle .middle-left {
+.spreadsheet-drag-circle .middle-left {
   left: -6px;
   top: calc(50% - 6px);
   cursor: w-resize;
 }
-.ty-drag-circle .middle-right {
+.spreadsheet-drag-circle .middle-right {
   right: -6px;
   top: calc(50% - 6px);
   cursor: w-resize;
 }
-.ty-drag-circle .bottom-left {
+.spreadsheet-drag-circle .bottom-left {
   left: -6px;
   bottom: -6px;
   cursor: sw-resize;
 }
-.ty-drag-circle .bottom-center {
+.spreadsheet-drag-circle .bottom-center {
   left: calc(50% - 6px);
   bottom: -7px;
   cursor: s-resize;
 }
-.ty-drag-circle .bottom-right {
+.spreadsheet-drag-circle .bottom-right {
   right: -6px;
   bottom: -6px;
   cursor: se-resize;
 }
-.ty-drag-circle .rotate-line {
+.spreadsheet-drag-circle .rotate-line {
   width: 2px;
   height: 24.5px;
   top: -32px;
@@ -1458,15 +1455,14 @@ ty-drag-content > div {
   left: calc(50% + 1px);
   position: absolute;
 }
-.ty-drag-circle .rotate-icon {
+.spreadsheet-drag-circle .rotate-icon {
   width: 24px;
   height: 24px;
   position: absolute;
   top: -50px;
-  //background-image: url(./icons/4319ed3209e5999879d00e2ea7eef42d.png);
   left: calc(50% - 10px);
 }
-.ty-layer-menu {
+.spreadsheet-layer-menu {
   display: block;
   position: absolute;
   z-index: 9999;
@@ -1476,14 +1472,14 @@ ty-drag-content > div {
   border-radius: 2px;
   border: 1px solid #ddd;
 }
-.ty-layer-menu .menu-item {
+.spreadsheet-layer-menu .menu-item {
   text-align: center;
   padding: 2px;
 }
-.ty-layer-menu .menu-item:hover {
+.spreadsheet-layer-menu .menu-item:hover {
   background: #eee;
 }
-.ty-layer-menu .menu-item.divider {
+.spreadsheet-layer-menu .menu-item.divider {
   height: 1px;
   background: #ddd;
   padding: 0;
