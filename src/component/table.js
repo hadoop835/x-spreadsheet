@@ -286,6 +286,23 @@ function renderContentGrid({
   });
   draw.restore();
 }
+//设置区域
+function renderRangeHighlightLine(viewRange,rowHeight) {
+  const { draw, data } = this;
+  let {
+    sri, sci, eri, eci, w, h,
+  } = viewRange; 
+  const {rows} = data;
+  const sumHeight = rows.sumHeight(sri, 40)+rowHeight/2;
+  const twidth = data.viewWidth();
+  const theight = data.viewHeight();
+  draw.save() 
+  draw.attr({ strokeStyle: 'green' });
+  draw.lineDash([5]);
+  draw.line([60, sumHeight], [twidth, sumHeight]);
+  draw.line([778, 0], [778, theight]);
+  draw.restore();
+}
 
 function renderFreezeHighlightLine(fw, fh, ftw, fth) {
   const { draw, data } = this;
@@ -326,10 +343,10 @@ class Table {
   }
   
   render() {
-    debugger;
     // resize canvas
     const { data } = this;
     const { rows, cols } = data;
+    console.log(data);
     // fixed width of header
     const fw = cols.indexWidth;
     // fixed height of header
@@ -343,6 +360,7 @@ class Table {
     const tx = data.freezeTotalWidth();
     const ty = data.freezeTotalHeight();
     const { x, y } = data.scroll;
+
     drawBackend.call(this,data,this.draw);
     // 1
     renderContentGrid.call(this, viewRange, fw, fh, tx, ty);
@@ -379,6 +397,11 @@ class Table {
       // 5
       renderFreezeHighlightLine.call(this, fw, fh, tx, ty);
     }
+    //A4分割线
+    if(!data.settings.showVtoolbar){
+      renderRangeHighlightLine.call(this,viewRange,fh);
+    }
+     
   }
 
   clear() {

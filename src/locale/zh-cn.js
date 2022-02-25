@@ -2,7 +2,7 @@ export default {
   toolbar: {
     undo: '撤销',
     redo: '恢复',
-    print: '打印',
+    print: '打印设置',
     export: '导出',
     paintformat: '格式刷',
     clearformat: '清除格式',

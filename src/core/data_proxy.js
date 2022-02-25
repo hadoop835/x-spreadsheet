@@ -1073,6 +1073,7 @@ export default class DataProxy {
   }
 
   viewRange() {
+    debugger
     const {
       scroll, rows, cols, freeze, exceptRowSet,
     } = this;

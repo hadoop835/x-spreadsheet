@@ -849,7 +849,7 @@ form fieldset select {
   line-height: 0;
 }
 .x-spreadsheet-icon .x-spreadsheet-icon-img {
-  background-image: url(d6ae8c4e5d2a92c50bf10583aad2d141.svg);
+  background-image: url(8d9b4376cc6ff58fd41edda2ff83a12f.svg);
   position: absolute;
   width: 262px;
   height: 444px;
@@ -1035,6 +1035,244 @@ form fieldset select {
   left: -54px;
   top: -54px;
 }
+.view-icon-img-first {
+  background-image: url(a312c37d124badd93edec09ef794d30e.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-icon-img-next {
+  background-image: url(5dc5ba2f2700f85dd2f1cf8fae535cd3.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-icon-img-last {
+  background-image: url(9e81622f02ba328cdc8cfe7486db06b9.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-icon-img-end {
+  background-image: url(eb5cd01261addc23ee76969e59b2ff68.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-icon-img-export {
+  background-image: url(d791f3723dc8a61d8ba90a515b74de36.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-icon-img-print {
+  background-image: url(8df65169c52aa56255711c653ab7cb85.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
+.view-text {
+  width: 45px;
+  margin: 1px 1px 2px 1px;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+}
+.btn-text-input {
+  position: relative;
+  padding: 0 6px 2px 6px;
+  vertical-align: middle;
+  text-align: center;
+  overflow: hidden;
+  display: inline-block;
+}
+.btn-input {
+  text-align: center;
+  display: inline-block;
+}
+.btn-input > input {
+  font-size: 12px;
+  width: 42px;
+  height: 16px;
+  text-align: center;
+  height: 18px;
+  line-height: 18px;
+  border: 1px solid #b5b8c8;
+  vertical-align: middle;
+  padding: 1px 3px!important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.btn-input > input:focus {
+  outline: 0;
+  outline-color: #b5b8c8;
+}
+.btn-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+/* 拖动样式 */
+.spreadsheet-drag-container {
+  left: 50px;
+  top: 50px;
+  position: absolute;
+  height: 151px;
+  width: 315px;
+  padding: 2px;
+  z-index: 99;
+}
+.x-spreadsheet-overlayer-content .spreadsheet-drag-container {
+  padding: 0;
+}
+.spreadsheet-drag-container.active {
+  border: 1px solid #515151;
+}
+.spreadsheet-drag-container.active.selected {
+  border: 1px solid #3883fa;
+}
+.spreadsheet-drag-container.chart {
+  height: 350px;
+  width: 650px;
+}
+.spreadsheet-drag-container .spreadsheet-drag-content {
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  cursor: move;
+  position: absolute;
+  overflow: hidden;
+}
+.spreadsheet-drag-container.img,
+.spreadsheet-drag-container.barcode {
+  padding: 0;
+}
+.spreadsheet-drag-container.img .spreadsheet-drag-content {
+  width: 100%;
+  height: 100%;
+}
+.spreadsheet-drag-container.cell-layer .spreadsheet-drag-content {
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+}
+.spreadsheet-drag-container.chart .spreadsheet-drag-content {
+  /*background: #fff;*/
+}
+.spreadsheet-drag-content img,
+ty-drag-content > div {
+  width: 100%;
+  height: 100%;
+}
+.spreadsheet-drag-content .spreadsheet-layer-chart {
+  width: 100%;
+  height: 100%;
+}
+.spreadsheet-drag-mover {
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  cursor: move;
+  position: absolute;
+}
+.spreadsheet-drag-circle {
+  display: none;
+}
+.spreadsheet-drag-container.active .spreadsheet-drag-circle {
+  display: block;
+}
+.spreadsheet-drag-circle .circle {
+  border-radius: 12px;
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  position: absolute;
+  border: 1px solid #515151;
+}
+.spreadsheet-drag-container.selected .spreadsheet-drag-circle .circle {
+  border: 1px solid #3883fa;
+}
+.spreadsheet-drag-circle .top-left {
+  left: -6px;
+  top: -6px;
+  cursor: nw-resize;
+}
+.spreadsheet-drag-circle .top-center {
+  left: calc(50% - 6px);
+  top: -7px;
+  cursor: n-resize;
+}
+.spreadsheet-drag-circle .top-right {
+  right: -6px;
+  top: -6px;
+  cursor: ne-resize;
+}
+.spreadsheet-drag-circle .middle-left {
+  left: -6px;
+  top: calc(50% - 6px);
+  cursor: w-resize;
+}
+.spreadsheet-drag-circle .middle-right {
+  right: -6px;
+  top: calc(50% - 6px);
+  cursor: w-resize;
+}
+.spreadsheet-drag-circle .bottom-left {
+  left: -6px;
+  bottom: -6px;
+  cursor: sw-resize;
+}
+.spreadsheet-drag-circle .bottom-center {
+  left: calc(50% - 6px);
+  bottom: -7px;
+  cursor: s-resize;
+}
+.spreadsheet-drag-circle .bottom-right {
+  right: -6px;
+  bottom: -6px;
+  cursor: se-resize;
+}
+.spreadsheet-drag-circle .rotate-line {
+  width: 2px;
+  height: 24.5px;
+  top: -32px;
+  background-color: #515151;
+  left: calc(50% + 1px);
+  position: absolute;
+}
+.spreadsheet-drag-circle .rotate-icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: -50px;
+  left: calc(50% - 10px);
+}
+.spreadsheet-layer-menu {
+  display: block;
+  position: absolute;
+  z-index: 9999;
+  background: #fff;
+  width: 150px;
+  font-size: 16px;
+  border-radius: 2px;
+  border: 1px solid #ddd;
+}
+.spreadsheet-layer-menu .menu-item {
+  text-align: center;
+  padding: 2px;
+}
+.spreadsheet-layer-menu .menu-item:hover {
+  background: #eee;
+}
+.spreadsheet-layer-menu .menu-item.divider {
+  height: 1px;
+  background: #ddd;
+  padding: 0;
+}
+.background {
+  background-image: url(52faa1b11c35730b76fd660a5ec7b012.svg);
+  width: 16px;
+  height: 16px;
+  opacity: 0.56;
+}
 
-
-/*# sourceMappingURL=xspreadsheet.css.map*/

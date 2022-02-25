@@ -314,7 +314,19 @@ class Draw {
     }
     return this;
   }
-
+  /**
+   * 画虚线
+   */
+  lineDash(){
+    const { ctx } = this;
+    ctx.lineDashOffset = 3;
+    ctx.lineWidth=3;
+    ctx.setLineDash([3, 4, 3]);
+  }
+  /**
+   * 
+   * @param  box 
+   */
   strokeBorders(box) {
     const { ctx } = this;
     ctx.save();

@@ -163,15 +163,23 @@ export default class Toolbar {
     const { extendToolbar = {} } = data.settings;
 
     if (extendToolbar.left && extendToolbar.left.length > 0) {
-      this.items.unshift(buildDivider());
-      const btns = extendToolbar.left.map(genBtn.bind(this));
-
-      this.items.unshift(btns);
+      const btns = extendToolbar.left.map(genBtn.bind(this)); 
+      let left = new Array();
+      for (var i=0;i<btns.length;i++){
+        this.items.unshift(buildDivider());
+         left.push(btns[i]);
+         this.items.unshift(left);
+        
+      }
     }
     if (extendToolbar.right && extendToolbar.right.length > 0) {
-      this.items.push(buildDivider());
       const btns = extendToolbar.right.map(genBtn.bind(this));
-      this.items.push(btns);
+      let right = new Array();
+      for (var i=0;i<btns.length;i++){
+        this.items.push(buildDivider());
+        right.push(btns[i]);
+        this.items.push(right);
+      }
     }
 
     this.items.push([this.moreEl = new More()]);
