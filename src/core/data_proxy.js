@@ -626,7 +626,8 @@ export default class DataProxy {
           } else if (property === 'strike' || property === 'textwrap'
             || property === 'underline'
             || property === 'align' || property === 'valign'
-            || property === 'color' || property === 'bgcolor') {
+            || property === 'color' || property === 'bgcolor'
+            ||property === 'cellslash'||property === 'cellslashdrawstart') {
             cstyle[property] = value;
             cell.style = this.addStyle(cstyle);
           } else {
@@ -832,7 +833,7 @@ export default class DataProxy {
     });
   }
 
-  setAutoFilter(ci, order, operator, value) {
+  setAutoFilter(ci, order, operator, value) { 
     const { autoFilter } = this;
     autoFilter.addFilter(ci, operator, value);
     autoFilter.setSort(ci, order);
@@ -1105,8 +1106,7 @@ export default class DataProxy {
     return exceptRowTH;
   }
 
-  viewRange() {
-    debugger
+  viewRange() { 
     const {
       scroll, rows, cols, freeze, exceptRowSet,
     } = this;

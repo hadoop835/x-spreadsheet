@@ -188,18 +188,18 @@ class Draw {
     return this;
   }
 
-  backGround(src,x, y, w, h){
+  backGround(src, x, y, w, h) {
     let img = new Image();
     img.crossOrigin = 'Anonymous'; //解决跨域问题
     let _self = this;
-    img.onload = function(){
-      _self.ctx.globalAlpha =0.6;  
-      _self.ctx.drawImage(img,npx(x) - 0.5, npx(y) - 0.5,npx(w), npx(h));
-   }
-   img.src=src;
-   return this;
+    img.onload = function () {
+      _self.ctx.globalAlpha = 0.6;
+      _self.ctx.drawImage(img, npx(x) - 0.5, npx(y) - 0.5, npx(w), npx(h));
+    }
+    img.src = src;
+    return this;
   }
-  
+
   fillRect(x, y, w, h) {
     this.ctx.fillRect(npx(x) - 0.5, npx(y) - 0.5, npx(w), npx(h));
     return this;
@@ -218,6 +218,8 @@ class Draw {
       valign: top | middle | bottom
       color: '#333333',
       strike: false,
+      cellslash:false, //单元格斜线
+      cellslashdrawstart:'lefttop',
       font: {
         name: 'Arial',
         size: 14,
@@ -230,54 +232,58 @@ class Draw {
   text(mtxt, box, attr = {}, textWrap = true) {
     const { ctx } = this;
     const {
-      align, valign, font, color, strike, underline,
+      align, valign, font, color, strike, underline, cellslash,
     } = attr;
-    const tx = box.textx(align);
-    ctx.save();
-    ctx.beginPath();
-    this.attr({
-      textAlign: align,
-      textBaseline: valign,
-      font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
-      fillStyle: color,
-      strokeStyle: color,
-    });
-    const txts = `${mtxt}`.split('\n');
-    const biw = box.innerWidth();
-    const ntxts = [];
-    txts.forEach((it) => {
-      const txtWidth = ctx.measureText(it).width;
-      if (textWrap && txtWidth > npx(biw)) {
-        let textLine = { w: 0, len: 0, start: 0 };
-        for (let i = 0; i < it.length; i += 1) {
-          if (textLine.w >= npx(biw)) {
-            ntxts.push(it.substr(textLine.start, textLine.len));
-            textLine = { w: 0, len: 0, start: i };
+    if (cellslash) {
+      this.addCellSlash(mtxt, box, attr, textWrap);
+    } else {
+      const tx = box.textx(align);
+      ctx.save();
+      ctx.beginPath();
+      this.attr({
+        textAlign: align,
+        textBaseline: valign,
+        font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+        fillStyle: color,
+        strokeStyle: color,
+      });
+      const txts = `${mtxt}`.split('\n');
+      const biw = box.innerWidth();
+      const ntxts = [];
+      txts.forEach((it) => {
+        const txtWidth = ctx.measureText(it).width;
+        if (textWrap && txtWidth > npx(biw)) {
+          let textLine = { w: 0, len: 0, start: 0 };
+          for (let i = 0; i < it.length; i += 1) {
+            if (textLine.w >= npx(biw)) {
+              ntxts.push(it.substr(textLine.start, textLine.len));
+              textLine = { w: 0, len: 0, start: i };
+            }
+            textLine.len += 1;
+            textLine.w += ctx.measureText(it[i]).width + 1;
           }
-          textLine.len += 1;
-          textLine.w += ctx.measureText(it[i]).width + 1;
+          if (textLine.len > 0) {
+            ntxts.push(it.substr(textLine.start, textLine.len));
+          }
+        } else {
+          ntxts.push(it);
         }
-        if (textLine.len > 0) {
-          ntxts.push(it.substr(textLine.start, textLine.len));
+      });
+      const txtHeight = (ntxts.length - 1) * (font.size + 2);
+      let ty = box.texty(valign, txtHeight);
+      ntxts.forEach((txt) => {
+        const txtWidth = ctx.measureText(txt).width;
+        this.fillText(txt, tx, ty);
+        if (strike) {
+          drawFontLine.call(this, 'strike', tx, ty, align, valign, font.size, txtWidth);
         }
-      } else {
-        ntxts.push(it);
-      }
-    });
-    const txtHeight = (ntxts.length - 1) * (font.size + 2);
-    let ty = box.texty(valign, txtHeight);
-    ntxts.forEach((txt) => {
-      const txtWidth = ctx.measureText(txt).width;
-      this.fillText(txt, tx, ty);
-      if (strike) {
-        drawFontLine.call(this, 'strike', tx, ty, align, valign, font.size, txtWidth);
-      }
-      if (underline) {
-        drawFontLine.call(this, 'underline', tx, ty, align, valign, font.size, txtWidth);
-      }
-      ty += font.size + 2;
-    });
-    ctx.restore();
+        if (underline) {
+          drawFontLine.call(this, 'underline', tx, ty, align, valign, font.size, txtWidth);
+        }
+        ty += font.size + 2;
+      });
+      ctx.restore();
+    }
     return this;
   }
 
@@ -317,10 +323,10 @@ class Draw {
   /**
    * 画虚线
    */
-  lineDash(){
+  lineDash() {
     const { ctx } = this;
     ctx.lineDashOffset = 3;
-    ctx.lineWidth=3;
+    ctx.lineWidth = 3;
     ctx.setLineDash([3, 4, 3]);
   }
   /**
@@ -415,6 +421,96 @@ class Draw {
     ctx.fill();
     dtextcb();
     ctx.restore();
+  }
+  /**
+   * 单元格斜线
+   * @param {*} ctx 
+   * @param {*} mtxt 
+   * @param {*} box 
+   * @param {*} attr 
+   * @param {*} textWrap 
+   * @param {*} distance 
+   */
+  drawCellSlash(ctx, mtxt, box, attr = {}, textWrap = true) {
+    debugger
+    const {
+      color,
+      cellslashdrawstart,
+    } = attr;
+    ctx.save();
+		ctx.strokeStyle = color;
+    ctx.beginPath();
+    let texts = `${mtxt}`.split('|');
+    if (texts && texts.length >= 2) {
+      if (texts.length == 2) {
+        if (cellslashdrawstart == 'leftbottom') {
+          ctx.moveTo(npx(box.x), npx(box.y + box.height));
+          ctx.lineTo(npx(box.x + box.width), npx(box.y));
+          this.fillSlashText(ctx, texts[0], box.x + 10, box.y + 20);
+          const txtWidth = ctx.measureText(texts[1]).width;
+          this.fillSlashText(ctx, texts[1], box.x + box.width - txtWidth - 10, box.y + box.height - 20);
+
+          // console.log("addCellSlash text txtWidth......",txtWidth);
+        } else {
+          ctx.moveTo(npx(box.x),npx(box.y));
+          ctx.lineTo(npx(box.x+box.width), npx(box.y+box.height));
+          this.fillSlashText(ctx, texts[0], box.x+2, box.y + box.height-8);
+          const txtWidth = ctx.measureText(texts[1]).width;
+          this.fillSlashText(ctx, texts[1], box.x + box.width - txtWidth, box.y+box.height/2);
+        }
+        ctx.stroke();
+      } else if (texts.length == 3) {
+        if (cellslashdrawstart == 'leftbottom') {
+          ctx.moveTo(npx(box.x), npx(box.y + box.height));
+          ctx.lineTo(npx(box.x + box.width / 2), npx(box.y));
+          ctx.moveTo(npx(box.x), npx(box.y + box.height));
+          ctx.lineTo(npx(box.x + box.width), npx(box.y + box.height / 2));
+
+          this.fillSlashText(ctx, texts[0], box.x + 10, box.y + 20);
+          const txtWidth = ctx.measureText(texts[1]).width;
+          this.fillSlashText(ctx, texts[1], box.x + box.width - txtWidth - 10, box.y + 20);
+          const txtWidth1 = ctx.measureText(texts[2]).width;
+          this.fillSlashText(ctx, texts[2], box.x + box.width - txtWidth1 - 10, box.y + box.height - 20);
+        } else {
+          ctx.moveTo(npx(box.x), npx(box.y));
+          ctx.lineTo(npx(box.x + box.width / 2), npx(box.y + box.height));
+          ctx.moveTo(npx(box.x), npx(box.y));
+          ctx.lineTo(npx(box.x + box.width), npx(box.y + box.height / 2));
+          this.fillSlashText(ctx, texts[0], box.x + 2, box.y + box.height - 8);
+          const txtWidth = ctx.measureText(texts[1]).width;
+          this.fillSlashText(ctx, texts[1], box.x + box.width - txtWidth, box.y + box.height-8);
+          const txtWidth1 = ctx.measureText(texts[2]).width;
+          this.fillSlashText(ctx, texts[2], box.x + box.width - txtWidth1, box.y + box.height/4);
+        }
+        ctx.stroke();
+		    ctx.closePath();
+      } else {
+
+      }
+    }
+    ctx.restore();
+  }
+
+  //添加单元格斜线
+  addCellSlash(mtxt, box, attr = {}, textWrap = true) {
+    const { ctx } = this;
+    const {
+      align, valign, font, color, strike, underline, cellslashdrawstart
+    } = attr;
+    this.attr({
+      textAlign: align,
+      textBaseline: valign,
+      font: `${font.italic ? 'italic' : ''} ${font.bold ? 'bold' : ''} ${npx(font.size)}px ${font.name}`,
+      fillStyle: color,
+      strokeStyle: color,
+    });
+    //先画显示的画布斜线
+    this.drawCellSlash(ctx, mtxt, box, attr, textWrap);
+    return this;
+  }
+
+  fillSlashText(ctx, text, x, y) {
+    ctx.fillText(text, npx(x), npx(y));
   }
 }
 

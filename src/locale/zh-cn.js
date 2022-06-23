@@ -25,6 +25,7 @@ export default {
     formula: '函数',
     more: '更多',
     background:'插入图片',
+    slash:'单元格斜线',
   },
   contextmenu: {
     copy: '复制',

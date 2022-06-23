@@ -16,14 +16,15 @@ import ContextMenu from './contextmenu';
 import Table from './table';
 import Toolbar from './toolbar/index';
 import Background from './toolbar/background';
-import ViewToolbar  from './viewtoolbar/index';
+import ViewToolbar from './viewtoolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
+import CellSlash from './cell_slash';
 import { xtoast } from './message';
 import { cssPrefix } from '../config';
 import { formulas } from '../core/formula';
 import uniqid from 'uniqid';
- 
+
 /**
  * @desc throttle fn
  * @param func function
@@ -74,7 +75,7 @@ function scrollbarMove() {
 function selectorSet(multiple, ri, ci, indexesUpdated = true, moving = false) {
   if (ri === -1 && ci === -1) return;
   const {
-    table, selector, toolbar, data,vtoolbar,
+    table, selector, toolbar, data, vtoolbar,
     contextMenu,
   } = this;
   const cell = data.getCell(ri, ci);
@@ -292,11 +293,11 @@ function sheetFreeze() {
 /**
  * 插入背景图
  */
-function insertBackground(src){
+function insertBackground(src) {
   const {
     data,
     overlayerEl,
-    overlayerCEl, 
+    overlayerCEl,
     selector,
     vtoolbar,
     table,
@@ -304,79 +305,79 @@ function insertBackground(src){
   } = this;
   debugger
   let uid = uniqid();
-  this.background = new Background(this,uid,src);
-  const { ri, ci } = data.selector; 
-  const vRect = data.cellRect(ri,ci);
+  this.background = new Background(this, uid, src);
+  const { ri, ci } = data.selector;
+  const vRect = data.cellRect(ri, ci);
   //top: 150px; left: 677px; width: 650px; height: 386px;
-  let left = vRect.left+58;
-  let top = vRect.top+25;
-  let Rect = data.getCellRectByXY(left+650, top+386);
+  let left = vRect.left + 58;
+  let top = vRect.top + 25;
+  let Rect = data.getCellRectByXY(left + 650, top + 386);
   this.background.el.css('left', `${left}px`);
   this.background.el.css('top', `${top}px`);
-   el.children(
+  el.children(
     this.background.el,
   )
-  this.background.itemClick = (key)=>{
-      if(key === "delete"){
-        document.getElementById(uid).remove();
-      }else if(key === "fixed"){
-        this.background.el.active(false,"selected").active(false,"active");
-        let view  = this.background.el.offset();
-        this.background.el.css("top",(view.top-25)+"px").css("left",(view.left-60)+"px").css("height",view.height+"px")
-        .css("width",view.width+"px");
-        this.overlayerCEl.children(this.background.el);
-        this.background.contextmenu=true;
-        this.overlayerEl.on("click",(evt)=>{
-              let img = this.background.el.offset();
-              let  rect = this.data.getCellRectByXY(evt.offsetX, evt.offsetY); 
-              if((rect.left >img.left && rect.left<(img.left+img.width)) && (rect.top>img.top && rect.top<(img.top+img.height))){
-                if(this.background.contextmenu){
-                  this.background.el.css("top",(img.top+25)+"px").css("left",(img.left+60)+"px").css("height",img.height+"px")
-                  .css("width",img.width+"px");
-                  this.background.el.active(true,"selected").active(true,"active");
-                  el.children(
-                    this.background.el,
-                  )
-                  this.background.contextmenu=false;
-                }
-              } 
-          });
-          let imgbackend = {};
-          imgbackend["src"]=src;
-          imgbackend["height"]=view.height;
-          imgbackend["width"]=view.width;
-          imgbackend["top"]=view.top;
-          imgbackend["left"]=view.left;
-          imgbackend["isbackend"]=false;
-          let imgList = new Array();
-          imgList.push(imgbackend);
-          debugger
-          if(data["imgList"]){
-            imgList.push(data["imgList"]); 
-          }
-          data["imgList"] = imgList;
-          this.table.resetData(data)
-      }else if(key === "backend"){
+  this.background.itemClick = (key) => {
+    if (key === "delete") {
+      document.getElementById(uid).remove();
+    } else if (key === "fixed") {
+      this.background.el.active(false, "selected").active(false, "active");
+      let view = this.background.el.offset();
+      this.background.el.css("top", (view.top - 25) + "px").css("left", (view.left - 60) + "px").css("height", view.height + "px")
+        .css("width", view.width + "px");
+      this.overlayerCEl.children(this.background.el);
+      this.background.contextmenu = true;
+      this.overlayerEl.on("click", (evt) => {
         let img = this.background.el.offset();
-        let imgbackend = {};
-        imgbackend["src"]=src;
-        imgbackend["height"]=img.height;
-        imgbackend["width"]=img.width;
-        imgbackend["top"]=img.top;
-        imgbackend["left"]=img.left;
-        imgbackend["isbackend"]=true;
-        let imgList = new Array();
-        imgList.push(imgbackend);
-        if(data["imgList"]){
-          imgList.push(data["imgList"]); 
+        let rect = this.data.getCellRectByXY(evt.offsetX, evt.offsetY);
+        if ((rect.left > img.left && rect.left < (img.left + img.width)) && (rect.top > img.top && rect.top < (img.top + img.height))) {
+          if (this.background.contextmenu) {
+            this.background.el.css("top", (img.top + 25) + "px").css("left", (img.left + 60) + "px").css("height", img.height + "px")
+              .css("width", img.width + "px");
+            this.background.el.active(true, "selected").active(true, "active");
+            el.children(
+              this.background.el,
+            )
+            this.background.contextmenu = false;
+          }
         }
-        data["imgList"] = imgList;
-        this.table.resetData(data)
-        document.getElementById(uid).remove();
+      });
+      let imgbackend = {};
+      imgbackend["src"] = src;
+      imgbackend["height"] = view.height;
+      imgbackend["width"] = view.width;
+      imgbackend["top"] = view.top;
+      imgbackend["left"] = view.left;
+      imgbackend["isbackend"] = false;
+      let imgList = new Array();
+      imgList.push(imgbackend);
+      debugger
+      if (data["imgList"]) {
+        imgList.push(data["imgList"]);
+      }
+      data["imgList"] = imgList;
+      this.table.resetData(data)
+    } else if (key === "backend") {
+      let img = this.background.el.offset();
+      let imgbackend = {};
+      imgbackend["src"] = src;
+      imgbackend["height"] = img.height;
+      imgbackend["width"] = img.width;
+      imgbackend["top"] = img.top;
+      imgbackend["left"] = img.left;
+      imgbackend["isbackend"] = true;
+      let imgList = new Array();
+      imgList.push(imgbackend);
+      if (data["imgList"]) {
+        imgList.push(data["imgList"]);
+      }
+      data["imgList"] = imgList;
+      this.table.resetData(data)
+      document.getElementById(uid).remove();
     }
   }
 
-  
+
   console.log(this);
   sheetReset.call(this);
 }
@@ -640,27 +641,27 @@ function insertDeleteRowColumn(type) {
 //预览事件
 function viewtoolbarChange(type, value) {
   const { data } = this;
-  if(type === 'print'){
+  if (type === 'print') {
     this.print.preview();
   }
-   debugger
-   console.log(data);
+  debugger
+  console.log(data);
 }
 //图片上传
 function toolbarUpload(type, env) {
   debugger
-  const { data,toolbar } = this;
+  const { data, toolbar } = this;
   const file = env.target.files[0];
-  insertBackground.call(this,"http://localhost:8085/jmreport/img/excel_online/a1644654762265.jpg");
+  insertBackground.call(this, "http://localhost:8085/jmreport/img/excel_online/a1644654762265.jpg");
   //上传完后清楚数据,下一次不生效
-  document.getElementById("background").value="";
+  document.getElementById("background").value = "";
   console.log(data);
   debugger
 }
 function toolbarChange(type, value) {
   debugger
-  
-  const { data,toolbar } = this;
+
+  const { data, toolbar, cellSlash } = this;
   console.log(type)
   if (type === 'undo') {
     console.log(data);
@@ -681,6 +682,9 @@ function toolbarChange(type, value) {
   } else if (type === 'autofilter') {
     // filter
     autofilter.call(this);
+  } else if (type === 'slash') {
+    //单元格斜线
+    cellSlash.setOffset({ top: 10, left: 20 });
   } else if (type === 'freeze') {
     if (value) {
       const { ri, ci } = data.selector;
@@ -688,10 +692,10 @@ function toolbarChange(type, value) {
     } else {
       this.freeze(0, 0);
     }
-  }else if(type === 'background'){
-   let file = document.getElementById("background");
-   file.click();
-  }else {
+  } else if (type === 'background') {
+    let file = document.getElementById("background");
+    file.click();
+  } else {
     data.setSelectedCellAttr(type, value);
     if (type === 'formula' && !data.selector.multiple()) {
       editorSet.call(this);
@@ -703,6 +707,21 @@ function toolbarChange(type, value) {
 function sortFilterChange(ci, order, operator, value) {
   // console.log('sort:', sortDesc, operator, value);
   this.data.setAutoFilter(ci, order, operator, value);
+  sheetReset.call(this);
+}
+
+//单元格斜线
+function cellSlashChange(ri, ci, context, redios) {
+  debugger
+  const {
+    data,
+    table,
+  } = this;
+  let cellText = data.getCellTextOrDefault(ri, ci);
+  let cellStyle = data.getCellStyle(ri, ci); 
+  data.setSelectedCellAttr('cellslash', true);
+  data.setSelectedCellAttr('cellslashdrawstart', redios);
+  data.setSelectedCellText(context, 'finished');
   sheetReset.call(this);
 }
 
@@ -720,6 +739,7 @@ function sheetInitEvents() {
     vtoolbar,
     modalValidation,
     sortFilter,
+    cellSlash,
   } = this;
   // overlayer
   overlayerEl
@@ -772,10 +792,12 @@ function sheetInitEvents() {
   toolbar.upload = (type, env) => toolbarUpload.call(this, type, env);
 
   // vtoolbar change
-  vtoolbar.change=(type,value)=>viewtoolbarChange.call(this,type,value);
+  vtoolbar.change = (type, value) => viewtoolbarChange.call(this, type, value);
 
   // sort filter ok
   sortFilter.ok = (ci, order, o, v) => sortFilterChange.call(this, ci, order, o, v);
+  //单元格斜线确定
+  cellSlash.ok = (ri, ci, context, redios) => cellSlashChange.call(this, ri, ci, context, redios);
 
   // resizer finished callback
   rowResizer.finishedFn = (cRect, distance) => {
@@ -1005,12 +1027,12 @@ function sheetInitEvents() {
 export default class Sheet {
   constructor(targetEl, data) {
     this.eventMap = createEventEmitter();
-    const { view, showToolbar, showContextmenu,showVtoolbar } = data.settings;
+    const { view, showToolbar, showContextmenu, showVtoolbar } = data.settings;
     this.el = h('div', `${cssPrefix}-sheet`);
     this.toolbar = new Toolbar(data, view.width, !showToolbar);
-    this.vtoolbar = new ViewToolbar(data,view.width,!showVtoolbar);
+    this.vtoolbar = new ViewToolbar(data, view.width, !showVtoolbar);
     this.print = new Print(data);
-    targetEl.children(this.toolbar.el,this.vtoolbar.el, this.el, this.print.el);
+    targetEl.children(this.toolbar.el, this.vtoolbar.el, this.el, this.print.el);
     this.data = data;
     // table
     this.tableEl = h('canvas', `${cssPrefix}-table`);
@@ -1041,6 +1063,8 @@ export default class Sheet {
       .child(this.overlayerCEl);
     // sortFilter
     this.sortFilter = new SortFilter();
+    //单元格斜线
+    this.cellSlash = new CellSlash();
     // root element
     //
     this.el.children(
@@ -1053,6 +1077,7 @@ export default class Sheet {
       this.contextMenu.el,
       this.modalValidation.el,
       this.sortFilter.el,
+      this.cellSlash.el,
     );
     // table
     this.table = new Table(this.tableEl.el, data);
@@ -1120,7 +1145,7 @@ export default class Sheet {
     return { width: data.viewWidth(), height: data.viewHeight() };
   }
   //修改源库，进行打印设置
-  setPrint(data){
+  setPrint(data) {
     this.print.preview();
   }
 

@@ -50,6 +50,7 @@ function renderCellBorders(bboxes, translateFunc) {
 */
 
 export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
+  debugger
   const { sortedRowMap, rows, cols } = data;
   if (rows.isHide(rindex) || cols.isHide(cindex)) return;
   let nrindex = rindex;
@@ -94,6 +95,8 @@ export function renderCell(draw, data, rindex, cindex, yoffset = 0) {
       color: style.color,
       strike: style.strike,
       underline: style.underline,
+      cellslash:style.cellslash, //添加单元格斜线处理
+      cellslashdrawstart:style.cellslashdrawstart, //添加单元格斜线处理
     }, style.textwrap);
     // error
     const error = data.validations.getError(rindex, cindex);
@@ -325,8 +328,15 @@ function drawBackend(data,draw){
       }
     })
   }
-  
-
+}
+/**
+ * 单元格斜线
+ * @param {*} data 
+ * @param {*} draw 
+ */
+function drawCellSlash(data,draw){
+   
+   
 }
 
 /** end */
@@ -360,8 +370,10 @@ class Table {
     const tx = data.freezeTotalWidth();
     const ty = data.freezeTotalHeight();
     const { x, y } = data.scroll;
-
+    //套打
     drawBackend.call(this,data,this.draw);
+    //单元格斜线
+    drawCellSlash.call(this,data,this.draw);
     // 1
     renderContentGrid.call(this, viewRange, fw, fh, tx, ty);
     renderContent.call(this, viewRange, fw, fh, -x, -y);

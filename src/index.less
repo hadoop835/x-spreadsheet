@@ -1240,6 +1240,10 @@ form fieldset {
     }
   }
 }
+.@{css-prefix}-icon .@{css-prefix}-icon-img.slash {
+  background-image: url(../assets/icons/slash.png);
+}
+
 .view-icon-img-first {
   background-image: url('../assets/view/first.svg'); 
   width: 16px;
@@ -1490,4 +1494,214 @@ ty-drag-content > div {
   width: 16px;
   height: 16px;
   opacity: 0.56;
+}
+
+
+.@{css-prefix}-input {
+  box-sizing: border-box;
+  margin: 0 8px;
+  padding: 0;
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: "tnum";
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 32px;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+.@{css-prefix}-input:focus,
+.@{css-prefix}-input:hover {
+  border-color: #40a9ff;
+  outline-color: #40a9ff;
+  border-right-width: 1px !important;
+}
+.@{css-prefix}-radio {
+  display: inline-block;
+}
+.@{css-prefix}-radio input {
+  display: inline-block;
+  vertical-align: middle;
+  height: 14px;
+  width: 14px;
+  cursor: pointer;
+}
+.@{css-prefix}-radio label {
+  display: inline-block;
+  vertical-align: middle;
+  height: 14px;
+  line-height: 14px;
+  margin-left: 2px;
+  cursor: pointer;
+}
+textarea.@{css-prefix}-input {
+  margin-bottom: 4px;
+  max-width: 100%;
+  height: auto;
+  min-height: 32px;
+  vertical-align: bottom;
+  transition: all 0.3s, height 0s;
+}
+.@{css-prefix}-modal-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.65);
+}
+.@{css-prefix}-modal-warp {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  overflow: auto;
+  outline: 0;
+  height: 100%;
+}
+.@{css-prefix}-modal {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5;
+  list-style: none;
+  font-feature-settings: "tnum";
+  position: relative;
+  top: 100px;
+  width: auto;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+.@{css-prefix}-modal.modal-default {
+  top: 5%;
+  height: 85%;
+  overflow-y: hidden;
+  width: 800px;
+}
+.@{css-prefix}-modal-clear {
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+}
+.ty-modal-content {
+  position: relative;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  height: 100%;
+}
+.@{css-prefix}-modal-close {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  z-index: 10;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.45);
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.@{css-prefix}-modal-close span {
+  display: block;
+  width: 42px;
+  height: 42px;
+  font-size: 24px;
+  font-weight: 100;
+  font-style: normal;
+  line-height: 42px;
+  text-align: center;
+  text-transform: none;
+  text-rendering: auto;
+}
+.@{css-prefix}-modal-close span:hover {
+  color: #000;
+}
+.@{css-prefix}-modal-content .header {
+  padding: 10px 24px;
+  color: rgba(0, 0, 0, 0.65);
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 4px 4px 0 0;
+}
+.@{css-prefix}-modal-content .header .title {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+.@{css-prefix}-modal-content .body {
+  padding: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  height: calc(100% - 86px);
+  overflow-y: auto;
+}
+.@{css-prefix}-modal-content .body .spin {
+  position: relative;
+  transition: opacity 0.3s;
+}
+.@{css-prefix}-modal-content .footer {
+  padding: 6px 6px;
+  text-align: right;
+  border-top: 1px solid #e8e8e8;
+  border-radius: 0 0 4px 4px;
+}
+.@{css-prefix}-button {
+  letter-spacing: 3px;
+  line-height: 30px;
+  position: relative;
+  display: inline-block;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: 1px solid transparent;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  border-color: #d9d9d9;
+  margin: 0 8px;
+}
+.@{css-prefix}-button:hover {
+  color: #096dd9;
+  background-color: #fff;
+  border-color: #096dd9;
+  outline: 0;
+  box-shadow: none;
+  text-decoration: none;
 }

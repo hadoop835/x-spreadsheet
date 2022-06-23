@@ -25,6 +25,7 @@ import Textwrap from './textwrap';
 import More from './more';
 import Item from './item';
 import BackImage from './image';
+import Slash  from './slash';
 
 import { h } from '../element';
 import { cssPrefix } from '../../config';
@@ -157,6 +158,10 @@ export default class Toolbar {
       buildDivider(),
         [
          this.backImageEl = new BackImage(),
+        ],
+        buildDivider(),
+        [
+         this.slashEl = new Slash(),
         ]
     ];
 

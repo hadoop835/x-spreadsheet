@@ -35,14 +35,14 @@
         },
         2: {
           cells: {
-            0: { text: 'render', style: 0 },
+            0: { text: 'render' },
             1: { text: 'Hello' },
             2: { text: 'haha', merge: [1, 1] },
           }
         },
         8: {
           cells: {
-            8: { text: 'border test', style: 0 },
+            8: { text: 'border test' },
           }
         }
       };
@@ -54,8 +54,8 @@
       previewEl.height = 16
       var xs = x_spreadsheet('#x-spreadsheet-demo', {
         mode: 'edit',
-        showToolbar: false,
-        showVtoolbar:true,
+        showToolbar: true,
+        showVtoolbar:false,
         showGrid: true,
         showBottomBar: false,
         showContextmenu: false, 
@@ -88,6 +88,8 @@
               bgcolor: '#f4f5f8',
               textwrap: true,
               color: '#900b09',
+              cellslash:true, //单元格斜线
+              cellslashdrawstart:'lefttop',
               border: {
                 top: ['thin', '#0366d6'],
                 bottom: ['thin', '#0366d6'],
