@@ -26,6 +26,7 @@ export default {
     more: '更多',
     background:'插入图片',
     slash:'单元格斜线',
+    barcode:"二维码",
   },
   contextmenu: {
     copy: '复制',

@@ -16,6 +16,7 @@ import ContextMenu from './contextmenu';
 import Table from './table';
 import Toolbar from './toolbar/index';
 import Background from './toolbar/background';
+import BarCodeChart from './toolbar/barcode_chart';
 import ViewToolbar from './viewtoolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
@@ -376,12 +377,59 @@ function insertBackground(src) {
       document.getElementById(uid).remove();
     }
   }
-
-
-  console.log(this);
   sheetReset.call(this);
 }
+/**
+ * 二维码
+ * @param {*} chart 
+ */
+function builderChart(chart) {
+  const {
+    data,
+    el,
+  } = this;
+  const { ri, ci } = data.selector;
+  const vRect = data.cellRect(ri, ci);
+  let left = vRect.left + 58;
+  let top = vRect.top + 25;
+  let Rect = data.getCellRectByXY(left + 650, top + 386);
+  chart.el.css('left', `${left}px`);
+  chart.el.css('top', `${top}px`);
+  el.children(
+    chart.el,
+  )
 
+  chart.itemClick = (key) => {
+    if (key === "delete") {
+      document.getElementById(chart.id).remove();
+    } else if (key === "fixed") {
+      chart.el.active(false, "selected").active(false, "active");
+      let view = chart.el.offset();
+      chart.el.css("top", (view.top - 25) + "px").css("left", (view.left - 60) + "px").css("height", view.height + "px")
+        .css("width", view.width + "px");
+      this.overlayerCEl.children(chart.el);
+      chart.contextmenu = true;
+      this.overlayerEl.on("click", (evt) => {
+        let img = chart.el.offset();
+        let rect = this.data.getCellRectByXY(evt.offsetX, evt.offsetY);
+        if ((rect.left > img.left && rect.left < (img.left + img.width)) && (rect.top > img.top && rect.top < (img.top + img.height))) {
+          if (chart.contextmenu) {
+            chart.el.css("top", (img.top + 25) + "px").css("left", (img.left + 60) + "px").css("height", img.height + "px")
+              .css("width", img.width + "px");
+            chart.el.active(true, "selected").active(true, "active");
+            el.children(
+              chart.el,
+            )
+            chart.contextmenu = false;
+          }
+        }
+      });
+      this.table.resetData(data)
+    }
+  }
+  sheetReset.call(this);
+
+}
 function sheetReset() {
   const {
     tableEl,
@@ -659,10 +707,7 @@ function toolbarUpload(type, env) {
   debugger
 }
 function toolbarChange(type, value) {
-  debugger
-
   const { data, toolbar, cellSlash } = this;
-  console.log(type)
   if (type === 'undo') {
     console.log(data);
     this.undo();
@@ -685,6 +730,14 @@ function toolbarChange(type, value) {
   } else if (type === 'slash') {
     //单元格斜线
     cellSlash.setOffset({ top: 10, left: 20 });
+  } else if (type === 'barcode') {
+    //条形码
+    let uid = uniqid();
+    this.barCodeChart = new BarCodeChart(this);
+    builderChart.call(this,this.barCodeChart);
+  } else if (type === 'qrcode') {
+    //二维码
+
   } else if (type === 'freeze') {
     if (value) {
       const { ri, ci } = data.selector;
@@ -718,7 +771,7 @@ function cellSlashChange(ri, ci, context, redios) {
     table,
   } = this;
   let cellText = data.getCellTextOrDefault(ri, ci);
-  let cellStyle = data.getCellStyle(ri, ci); 
+  let cellStyle = data.getCellStyle(ri, ci);
   data.setSelectedCellAttr('cellslash', true);
   data.setSelectedCellAttr('cellslashdrawstart', redios);
   data.setSelectedCellText(context, 'finished');

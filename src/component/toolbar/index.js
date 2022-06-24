@@ -25,7 +25,8 @@ import Textwrap from './textwrap';
 import More from './more';
 import Item from './item';
 import BackImage from './image';
-import Slash  from './slash';
+import Slash from './slash';
+import Barcode from './barcode';
 
 import { h } from '../element';
 import { cssPrefix } from '../../config';
@@ -108,8 +109,8 @@ function genBtn(it) {
 export default class Toolbar {
   constructor(data, widthFn, isHide = false) {
     this.data = data;
-    this.change = () => {};
-    this.upload = () => {};
+    this.change = () => { };
+    this.upload = () => { };
     this.widthFn = widthFn;
     this.isHide = isHide;
     const style = data.defaultStyle();
@@ -156,31 +157,36 @@ export default class Toolbar {
         this.formulaEl = new Formula(),
       ],
       buildDivider(),
-        [
-         this.backImageEl = new BackImage(),
-        ],
+      [
+        this.backImageEl = new BackImage(),
+      ],
+      buildDivider(),
+      [
+        this.slashEl = new Slash(),
+      ],
         buildDivider(),
-        [
-         this.slashEl = new Slash(),
-        ]
+      [
+        this.barcodeEl = new Barcode(),
+      ]
+        
     ];
 
     const { extendToolbar = {} } = data.settings;
 
     if (extendToolbar.left && extendToolbar.left.length > 0) {
-      const btns = extendToolbar.left.map(genBtn.bind(this)); 
+      const btns = extendToolbar.left.map(genBtn.bind(this));
       let left = new Array();
-      for (var i=0;i<btns.length;i++){
+      for (var i = 0; i < btns.length; i++) {
         this.items.unshift(buildDivider());
-         left.push(btns[i]);
-         this.items.unshift(left);
-        
+        left.push(btns[i]);
+        this.items.unshift(left);
+
       }
     }
     if (extendToolbar.right && extendToolbar.right.length > 0) {
       const btns = extendToolbar.right.map(genBtn.bind(this));
       let right = new Array();
-      for (var i=0;i<btns.length;i++){
+      for (var i = 0; i < btns.length; i++) {
         this.items.push(buildDivider());
         right.push(btns[i]);
         this.items.push(right);
@@ -199,7 +205,7 @@ export default class Toolbar {
           i.change = (...args) => {
             this.change(...args);
           };
-          if(i.tag === "background"){
+          if (i.tag === "background") {
             i.upload = (...args) => {
               this.upload(...args);
             };

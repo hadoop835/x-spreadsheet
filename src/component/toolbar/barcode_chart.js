@@ -1,0 +1,30 @@
+import { h } from '../element';
+import { cssPrefix } from '../../config';
+import CommonChart from './common_chart';
+import { unbind, bindClickoutside, unbindClickoutside } from '../event';
+
+/**
+ * 公共插入图片处理
+ * 包含 二维码、图表
+ */
+export default class BarCodeChart extends CommonChart{
+  /**
+   * 
+   * @param {*} sheet 
+   * @param {*} css 样式
+   * @param {*} id 
+   * @param {*} element 元素
+   * @param {*} viewFn 
+   * @param {*} isHide 
+   */
+  constructor(sheet, viewFn, isHide = false) {
+    super(sheet,"barcode",viewFn,isHide); 
+  }
+
+  element(obj){
+    return h("div",'').css("position","absolute").css("bottom","0px").css("width","100%").css("height","100%").children(
+      h("img",'').attr("id","bar-"+obj.id).attr("src","data:image/png;base64,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")
+    )
+  }
+  
+}
