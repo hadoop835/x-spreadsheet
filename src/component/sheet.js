@@ -17,6 +17,7 @@ import Table from './table';
 import Toolbar from './toolbar/index';
 import Background from './toolbar/background';
 import BarCodeChart from './toolbar/barcode_chart';
+import QrCodeChart from './toolbar/qrcode_chart';
 import ViewToolbar from './viewtoolbar/index';
 import ModalValidation from './modal_validation';
 import SortFilter from './sort_filter';
@@ -26,6 +27,18 @@ import { cssPrefix } from '../config';
 import { formulas } from '../core/formula';
 import uniqid from 'uniqid';
 
+/* global window */
+function dpr() {
+  return window.devicePixelRatio || 1;
+}
+
+function thinLineWidth() {
+  return dpr() - 0.5;
+}
+
+function npx(px) {
+  return parseInt(px * dpr(), 10);
+}
 /**
  * @desc throttle fn
  * @param func function
@@ -383,11 +396,13 @@ function insertBackground(src) {
  * 二维码
  * @param {*} chart 
  */
-function builderChart(chart) {
+function builderChart(type, chart) {
   const {
     data,
     el,
+    layerList,
   } = this;
+  checkLayer.call(this, type, chart);
   const { ri, ci } = data.selector;
   const vRect = data.cellRect(ri, ci);
   let left = vRect.left + 58;
@@ -398,38 +413,48 @@ function builderChart(chart) {
   el.children(
     chart.el,
   )
-
+  chart.setImage();
   chart.itemClick = (key) => {
     if (key === "delete") {
       document.getElementById(chart.id).remove();
     } else if (key === "fixed") {
-      chart.el.active(false, "selected").active(false, "active");
       let view = chart.el.offset();
-      chart.el.css("top", (view.top - 25) + "px").css("left", (view.left - 60) + "px").css("height", view.height + "px")
-        .css("width", view.width + "px");
+      let CE = this.overlayerCEl.offset();
+      chart.fixed = true;
+      chart.el.active(false, "selected").active(false, "active");
+      chart.el.css("top", (view.top - CE.top) + "px").css("left", (view.left - CE.left) + "px");
       this.overlayerCEl.children(chart.el);
       chart.contextmenu = true;
-      this.overlayerEl.on("click", (evt) => {
-        let img = chart.el.offset();
-        let rect = this.data.getCellRectByXY(evt.offsetX, evt.offsetY);
-        if ((rect.left > img.left && rect.left < (img.left + img.width)) && (rect.top > img.top && rect.top < (img.top + img.height))) {
-          if (chart.contextmenu) {
-            chart.el.css("top", (img.top + 25) + "px").css("left", (img.left + 60) + "px").css("height", img.height + "px")
-              .css("width", img.width + "px");
-            chart.el.active(true, "selected").active(true, "active");
-            el.children(
-              chart.el,
-            )
-            chart.contextmenu = false;
-          }
-        }
-      });
       this.table.resetData(data)
     }
   }
   sheetReset.call(this);
-
 }
+
+function checkLayer(type, chart) {
+  const {
+    data,
+    el,
+    layerList,
+    overlayerCEl,
+  } = this;
+  if (layerList && layerList.length > 0) {
+    let CE = overlayerCEl.offset();
+    for (let i = 0; i < layerList.length; i++) {
+      let layer = layerList[i];
+      if (layer.id != chart.id) {
+        let img = layer.el.offset();
+        if (!layer.fixed) {
+          layer.el.css("top", (img.top - CE.top) + "px").css("left", (img.left - CE.left) + "px");
+          layer.el.active(false, "selected").active(false, "active");
+          overlayerCEl.children(layer.el);
+          layerList[i].fixed = true;
+        }
+      }
+    }
+  }
+}
+
 function sheetReset() {
   const {
     tableEl,
@@ -526,7 +551,7 @@ function overlayerMousedown(evt) {
   // console.log(':::::overlayer.mousedown:', evt.detail, evt.button, evt.buttons, evt.shiftKey);
   // console.log('evt.target.className:', evt.target.className);
   const {
-    selector, data, table, sortFilter,
+    selector, data, table, sortFilter, qrCodeChart, barCodeChart, el, overlayerCEl, layerList
   } = this;
   const { offsetX, offsetY } = evt;
   const isAutofillEl = evt.target.className === `${cssPrefix}-selector-corner`;
@@ -582,6 +607,63 @@ function overlayerMousedown(evt) {
       selectorSet.call(this, true, ri, ci);
     }
   }
+  //处理二维码
+  if (layerList && layerList.length > 0) {
+    let CE = overlayerCEl.offset();
+    for (let i = 0; i < layerList.length; i++) {
+      let layer = layerList[i];
+      let check = layer.el.offset();
+      console.log(check, "check")
+      console.log(evt, "evt")
+      if ((offsetX > check.left + 60 && offsetX < (check.left + check.width)) && (offsetY > check.top + 25 && offsetY < (check.top + check.height))) {
+        layer.el.active(true, "selected").active(true, "active");
+        layer.el.css("top", (check.top + CE.top) + "px").css("left", (check.left + CE.left) + "px");
+        el.children(layer.el);
+        if (layer.type == 'qrcode') {
+          this.qrCodeChart = layer;
+        } else {
+          this.barCodeChart = layer;
+        }
+        layerList[i].fixed =false;
+        if (layerList && layerList.length > 0) {
+          for (let k = 0; k < layerList.length; k++) {
+            if(layerList[i].id != layerList[k].id){
+              let fixed = layerList[k].el.offset();
+              if (!layerList[k].fixed) {
+                layerList[k].el.css("top", (fixed.top- CE.top) + "px").css("left", (fixed.left - CE.left) + "px");
+                  layerList[k].el.active(false, "selected").active(false, "active");
+                overlayerCEl.children(layerList[k].el);
+                layerList[k].fixed=true;
+              }
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  // for (let n = 0; n < layerList.length; n++) {
+  //   layer.el.css("top", (check.top) + "px").css("left", (check.left - CE.left) + "px").css("height", check.height + "px")
+  //   .css("width", check.width + "px");
+  //   layer.el.active(false, "selected").active(false, "active");
+  //   overlayerCEl.children(layer.el);
+  // }
+  // if (qrCodeChart) {
+  //   if(qrCodeChart.fixed){
+  //     let img = qrCodeChart.el.offset();
+  //     let CE = overlayerCEl.offset();
+  //     if ((cellRect.left > img.left && cellRect.left < (img.left + img.width)) && (cellRect.top > img.top && cellRect.top < (img.top + img.height))) {
+  //       qrCodeChart.el.active(true, "selected").active(true, "active");
+  //       qrCodeChart.el.css("top", (img.top + CE.top) + "px").css("left", (img.left + CE.left) + "px").css("height", img.height + "px")
+  //       .css("width", img.width + "px");
+  //       el.children(
+  //         qrCodeChart.el,
+  //       )
+  //       qrCodeChart.fixed=false;
+  //     }
+  //   }
+  // }
 }
 
 function editorSetOffset() {
@@ -707,7 +789,7 @@ function toolbarUpload(type, env) {
   debugger
 }
 function toolbarChange(type, value) {
-  const { data, toolbar, cellSlash } = this;
+  const { data, toolbar, cellSlash, layerList } = this;
   if (type === 'undo') {
     console.log(data);
     this.undo();
@@ -731,12 +813,17 @@ function toolbarChange(type, value) {
     //单元格斜线
     cellSlash.setOffset({ top: 10, left: 20 });
   } else if (type === 'barcode') {
-    //条形码
-    let uid = uniqid();
-    this.barCodeChart = new BarCodeChart(this);
-    builderChart.call(this,this.barCodeChart);
-  } else if (type === 'qrcode') {
-    //二维码
+    if (value == 'barcode') {
+      //条形码
+      this.barCodeChart = new BarCodeChart(this, uniqid());
+      layerList.push(this.barCodeChart);
+      //二维码
+      builderChart.call(this, "barcode", this.barCodeChart); //条形码  
+    } else {
+      this.qrCodeChart = new QrCodeChart(this, uniqid());
+      layerList.push(this.qrCodeChart);
+      builderChart.call(this, "qrcode", this.qrCodeChart);//二维码
+    }
 
   } else if (type === 'freeze') {
     if (value) {
@@ -1118,6 +1205,11 @@ export default class Sheet {
     this.sortFilter = new SortFilter();
     //单元格斜线
     this.cellSlash = new CellSlash();
+    //条形码
+    this.barCodeChart = null;
+    //二维码
+    this.qrCodeChart = null;
+    this.layerList = new Array();
     // root element
     //
     this.el.children(

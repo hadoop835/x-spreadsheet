@@ -65,6 +65,10 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@ant-design/pro-components": "^1.1.6",
+    "antd": "^4.21.3",
+    "echarts": "^5.3.3",
     "jsbarcode": "^3.11.5",
     "opencollective": "^1.0.3",
     "opencollective-postinstall": "^2.0.2",

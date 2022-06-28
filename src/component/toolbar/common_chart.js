@@ -1,7 +1,6 @@
 import { h } from '../element';
 import { cssPrefix } from '../../config';
 import { unbind, bindClickoutside, unbindClickoutside } from '../event';
-import uniqid from 'uniqid';
 
 function menuBuildDivider() {
   return h('div', `menu-item divider`);
@@ -13,14 +12,14 @@ const menuItems = [
   { key: 'fixed', title: "固定" },
 ];
 const circle = [
-  {css:"cc top-left"},
-  {css:"cc top-center"},
-  {css:"cc top-right"},
-  {css:"cc middle-left"},
-  {css:"cc middle-right"},
-  {css:"cc bottom-left"},
-  {css:"cc bottom-center"},
-  {css:"cc bottom-right"},
+  { css: "cc top-left" },
+  { css: "cc top-center" },
+  { css: "cc top-right" },
+  { css: "cc middle-left" },
+  { css: "cc middle-right" },
+  { css: "cc bottom-left" },
+  { css: "cc bottom-center" },
+  { css: "cc bottom-right" },
 ];
 
 function buildMenuItem(item) {
@@ -65,13 +64,14 @@ export default class CommonChart {
    * @param {*} viewFn 
    * @param {*} isHide 
    */
-  constructor(sheet, css, viewFn, isHide = false) {
+  constructor(sheet, id, css, viewFn, isHide = false) {
     this.menuItems = buildMenu.call(this);
     this.sheet = sheet;
-    this.id = uniqid();
+    this.id = id;
     this.fixed = false;
     this.itemClick = () => { };
     this.itemDrag = () => { }
+    this.change = () => { }
     this.viewFn = viewFn;
     this.isHide = isHide;
     this.css = css;
@@ -83,20 +83,23 @@ export default class CommonChart {
     this.eltop = 0;
     this.elDowm = false;
     this.move = false;
+    this.imgEl = null;
+    this.fixed = false;
+    this.type=null;
     //右键菜单
     this.layerMenuEl = h('div', `${cssPrefix}-layer-menu`).children(...this.menuItems).hide();
     this.dragCircleEl = h('div', `${cssPrefix}-drag-circle`).children(...circle.map(it => this.buildCircleItem.call(this, it)));
 
     this.dragContentEl = h('div', `${cssPrefix}-drag-content`).children(this.element(this));
-    this.dragMoverEl = h('div', `${cssPrefix}-drag-mover`).hide();
+    this.dragMoverEl = h('div', `${cssPrefix}-drag-mover`);
     this.el = h('div', `${cssPrefix}-drag-container ${css}  selected`).active().attr("id", this.id)
       .children(
         this.dragContentEl,
         this.dragCircleEl,
         this.dragMoverEl,
         this.layerMenuEl,
-      );
-    this.dragContentEl.on('mousedown', (evt) => { 
+      ); 
+    this.dragMoverEl.on('mousedown', (evt) => {
       evt.preventDefault();
       this.layerMenuEl.hide();
       const view = this.el.offset();
@@ -142,11 +145,11 @@ export default class CommonChart {
    * @returns 
    */
   setPosition(x, y) {
-    this.elDowm =false;
+    this.elDowm = false;
     if (this.isHide) return;
-    const { layerMenuEl,dragContentEl } = this;
+    const { layerMenuEl, dragMoverEl } = this;
     const { width } = layerMenuEl.show().offset();
-    const view = dragContentEl.offset();
+    const view = dragMoverEl.offset();
     const vhf = view.height / 2;
     let left = x;
     if (view.width - x <= width) {
@@ -170,73 +173,82 @@ export default class CommonChart {
     layerMenuEl.hide();
     unbindClickoutside(layerMenuEl);
   }
+  select(){
+     this.el.addClass("selected");
+  }
+  unselect(){
+    this.el.removeClass("selected");
+  }
+  change(tag,id){
+    alert("change")
+  }
   /**
    * 
    * @param {*} item 
    * @returns 
    */
-  buildCircleItem(item) {  
+  buildCircleItem(item) {
     this.elDowm = false;
-    let move =false;
-   return h('div', item.css)
-     .on('mousedown', (evt) => { 
+    let move = false;
+    return h('div', item.css)
+      .on('mousedown', (evt) => {
         move = true;
-       let ev = evt||event;
-       let disX = ev.clientX;
-       let disY = ev.clientY;
-       const view = this.el.offset();
-       let width = view.width;
-       let height = view.height;
-       let left = view.left;
-       let top = view.top;
-       this.sheet.el.on('mousemove', (mev) => { 
-         if(move){
-          let mevt = mev || window.event;
-          let x = mevt.clientX;
-          let y = mevt.clientY;
-          if(item.css === "cc top-left"){ //左上
-           this.el.css("width", (width - (x - disX)) + 'px');
-           this.el.css("height",(height-(y-disY))+'px');
-           this.el.css("left",(left + (x - disX)) + 'px');
-           this.el.css("top",(top + (y - disY)) + 'px');
-          }else if(item.css === "cc top-center"){//向上
-            this.el.css("height",(height-(y-disY))+'px');
-            this.el.css("top",(top + (y - disY)) + 'px');
-          }else if(item.css === "cc top-right"){//右上
-            this.el.css("width", (width + (x - disX)) + 'px');
-            this.el.css("height",(height-(y-disY))+'px');
-            this.el.css("right",(left - (x - disX)) + 'px');
-            this.el.css("top",(top + (y - disY)) + 'px'); 
-          }else if(item.css === "cc middle-left"){//向左
-            this.el.css("width", (width - (x - disX)) + 'px');
-            this.el.css("height",height+'px');
-            this.el.css("left",(left + (x - disX)) + 'px'); 
-          }else if(item.css === "cc middle-right"){//向右
-            this.el.css("width", (width + (x - disX)) + 'px');
-            this.el.css("height",height+'px');
-            this.el.css("right",(left - (x - disX)) + 'px');
-          }else if(item.css === "cc bottom-left"){//左下
-            this.el.css("width", (width - (x - disX)) + 'px');
-            this.el.css("height",(height+(y-disY))+'px');
-            this.el.css("left",(left + (x - disX)) + 'px');
-            this.el.css("bottom",(top + (y + disY)) + 'px');
-          }else if(item.css === "cc bottom-center"){//向下
-            this.el.css("height",(height+(y-disY))+'px');
-            this.el.css("bottom",(top - (y + disY)) + 'px'); 
-          }else if(item.css === "cc bottom-right"){//右下
-            this.el.css("width", (width + (x - disX)) + 'px');
-            this.el.css("height",(height+(y-disY))+'px');
-            this.el.css("right",(left - (x - disX)) + 'px');
-            this.el.css("bottom",(top + (y + disY)) + 'px');
+        let ev = evt || event;
+        let disX = ev.clientX;
+        let disY = ev.clientY;
+        const view = this.el.offset();
+        let width = view.width;
+        let height = view.height;
+        let left = view.left;
+        let top = view.top;
+        this.sheet.el.on('mousemove', (mev) => {
+          if (move) {
+            let mevt = mev || window.event;
+            let x = mevt.clientX;
+            let y = mevt.clientY;
+            if (item.css === "cc top-left") { //左上
+              this.el.css("width", (width - (x - disX)) + 'px');
+              this.el.css("height", (height - (y - disY)) + 'px');
+              this.el.css("left", (left + (x - disX)) + 'px');
+              this.el.css("top", (top + (y - disY)) + 'px');
+            } else if (item.css === "cc top-center") {//向上
+              this.el.css("height", (height - (y - disY)) + 'px');
+              this.el.css("top", (top + (y - disY)) + 'px');
+            } else if (item.css === "cc top-right") {//右上
+              this.el.css("width", (width + (x - disX)) + 'px');
+              this.el.css("height", (height - (y - disY)) + 'px');
+              this.el.css("right", (left - (x - disX)) + 'px');
+              this.el.css("top", (top + (y - disY)) + 'px');
+            } else if (item.css === "cc middle-left") {//向左
+              this.el.css("width", (width - (x - disX)) + 'px');
+              this.el.css("height", height + 'px');
+              this.el.css("left", (left + (x - disX)) + 'px');
+            } else if (item.css === "cc middle-right") {//向右
+              this.el.css("width", (width + (x - disX)) + 'px');
+              this.el.css("height", height + 'px');
+              this.el.css("right", (left - (x - disX)) + 'px');
+            } else if (item.css === "cc bottom-left") {//左下
+              this.el.css("width", (width - (x - disX)) + 'px');
+              this.el.css("height", (height + (y - disY)) + 'px');
+              this.el.css("left", (left + (x - disX)) + 'px');
+              this.el.css("bottom", (top + (y + disY)) + 'px');
+            } else if (item.css === "cc bottom-center") {//向下
+              this.el.css("height", (height + (y - disY)) + 'px');
+              this.el.css("bottom", (top - (y + disY)) + 'px');
+            } else if (item.css === "cc bottom-right") {//右下
+              this.el.css("width", (width + (x - disX)) + 'px');
+              this.el.css("height", (height + (y - disY)) + 'px');
+              this.el.css("right", (left - (x - disX)) + 'px');
+              this.el.css("bottom", (top + (y + disY)) + 'px');
+            }
           }
-         }
         }).on('mouseup', () => {
           move = false;
+        });
+      }).on("mouseup", () => {
+        move = false;
       });
-    }).on("mouseup",()=>{
-         move = false;
-   });
- } 
+  }
 
   element(id) { }
 
