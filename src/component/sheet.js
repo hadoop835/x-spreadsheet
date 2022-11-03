@@ -707,7 +707,15 @@ function horizontalScrollbarMove(distance) {
 function rowResizerFinished(cRect, distance) {
   const { ri } = cRect;
   const { table, selector, data } = this;
-  data.rows.setHeight(ri, distance);
+  const { sri, eri } = selector.range;
+  if (ri >= sri && ri <= eri) {
+    for (let row = sri; row <= eri; row += 1) {
+      data.rows.setHeight(row, distance);
+    }
+  } else {
+    data.rows.setHeight(ri, distance);
+  }
+
   table.render();
   selector.resetAreaOffset();
   verticalScrollbarSet.call(this);
@@ -717,8 +725,15 @@ function rowResizerFinished(cRect, distance) {
 function colResizerFinished(cRect, distance) {
   const { ci } = cRect;
   const { table, selector, data } = this;
-  data.cols.setWidth(ci, distance);
-  // console.log('data:', data);
+  const { sci, eci } = selector.range;
+  if (ci >= sci && ci <= eci) {
+    for (let col = sci; col <= eci; col += 1) {
+      data.cols.setWidth(col, distance);
+    }
+  } else {
+    data.cols.setWidth(ci, distance);
+  }
+
   table.render();
   selector.resetAreaOffset();
   horizontalScrollbarSet.call(this);
